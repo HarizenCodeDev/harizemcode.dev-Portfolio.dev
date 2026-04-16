@@ -19,21 +19,6 @@
 
 ---
 
-### 📺 Alternative: Embed Video
-
-<iframe 
-  width="100%" 
-  height="400" 
-  src="https://www.youtube.com/embed/4K8sRLkcjM4" 
-  title="Portfolio Demo" 
-  frameborder="0" 
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-  allowfullscreen
-  style="border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);"
-></iframe>
-
----
-
 ## 🚀 Features
 
 ### ✨ Animations & Interactions
