@@ -119,8 +119,9 @@ const TiltCard = ({ children, className }) => {
   );
 };
 
-const Section = ({ children }) => (
+const Section = ({ id, children }) => (
   <motion.section
+    id={id}
     className="section"
     initial="hidden"
     whileInView="visible"
@@ -399,14 +400,14 @@ export default function App() {
         </motion.div>
       </section>
 
-      <Section>
+      <Section id="summary">
         <SectionHeader label="About" title="Executive Summary" />
         <motion.div className="summary-section" variants={fadeInUp} whileHover={{ scale: 1.01 }}>
           <p className="summary-text">{summary}</p>
         </motion.div>
       </Section>
 
-      <Section>
+      <Section id="education">
         <SectionHeader label="Background" title="Education" desc="Academic journey and achievements" />
         <motion.div className="grid-3" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           {education.map((edu, i) => (
@@ -421,7 +422,7 @@ export default function App() {
         </motion.div>
       </Section>
 
-      <Section>
+      <Section id="skills">
         <SectionHeader label="Expertise" title="Skills & Technologies" desc="Tools and technologies I work with" />
         <motion.div className="skills-container" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           {Object.entries(groupedSkills).filter(([_, v]) => v.length > 0).map(([category, items], catIndex) => (
@@ -461,7 +462,7 @@ export default function App() {
         </motion.div>
       </Section>
 
-      <Section>
+      <Section id="gallery">
         <SectionHeader label="Achievements" title="Certificate Gallery" desc="Certifications and accomplishments" />
         <div className="gallery-grid">
           {gallery.slice(0, 12).map((img, i) => {
@@ -494,7 +495,7 @@ export default function App() {
         </div>
       </Section>
 
-      <Section>
+      <Section id="projects">
         <SectionHeader label="Work" title="Featured Projects" desc="Things I've built and shipped" />
         <motion.div className="grid-3" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           {projects.map((project, i) => (
@@ -511,7 +512,7 @@ export default function App() {
         </motion.div>
       </Section>
 
-      <Section>
+      <Section id="contact">
         <SectionHeader label="Connect" title="Let's Work Together" desc="Feel free to reach out" />
         <motion.div className="contact-grid" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           <motion.div className="contact-info" variants={slideInLeft}>
