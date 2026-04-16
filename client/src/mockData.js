@@ -97,7 +97,7 @@ export const mockPortfolio = {
   ],
   contact: {
     email: '052005hari@gmail.com',
-    phone: '+91 xxxxxxxxxx',
+    phone: '+91 7200550619',
     linkedin: 'https://www.linkedin.com/in/mrnobody1305',
     github: 'https://github.com/MrNobody7200',
     discord: 'xxxxxxx#0000',
