@@ -116,6 +116,18 @@ body {
   letter-spacing: -0.5px;
 }
 
+.brand-logo {
+  height: 40px;
+  width: auto;
+  border-radius: 8px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.brand:hover .brand-logo {
+  transform: scale(1.05);
+}
+
 .brand-text {
   background: var(--gradient-primary);
   background-size: 200% 200%;
@@ -252,6 +264,16 @@ body {
   line-height: 1;
   letter-spacing: -4px;
   margin-bottom: 40px;
+}
+
+.hero-logo {
+  width: 160px;
+  height: auto;
+  margin: 0 auto 32px;
+  display: block;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  filter: drop-shadow(0 10px 30px rgba(139, 92, 246, 0.3));
 }
 
 .hero-title-text {

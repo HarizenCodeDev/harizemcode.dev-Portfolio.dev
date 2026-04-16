@@ -299,6 +299,7 @@ export default function App() {
         transition={{ duration: 0.8, ease: 'easeOut' }}
       >
         <a href="#home" className="brand" onClick={(e) => { e.preventDefault(); scrollToSection('home'); }}>
+          <img src="/img/haridevx.png" alt="Logo" className="brand-logo" />
           <span className="brand-text">Mr. Hariharan N</span>
         </a>
 
@@ -376,6 +377,15 @@ export default function App() {
           <motion.p className="hero-subtitle" variants={fadeInUp}>
             <AnimatedText text={hero.lines.join(' ')} />
           </motion.p>
+
+          <motion.img 
+            src="/img/haridevx.png" 
+            alt="Hariharan Logo" 
+            className="hero-logo"
+            variants={scaleIn}
+            whileHover={{ scale: 1.1, rotate: 3 }}
+            transition={{ type: 'spring', stiffness: 200 }}
+          />
 
           <motion.div className="hero-cta" variants={fadeInUp}>
             <RippleButton href="#projects" className="btn btn-primary" primary>
