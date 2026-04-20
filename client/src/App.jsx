@@ -1,9 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
 import { mockPortfolio } from './mockData';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-
-const API_BASE = import.meta.env.VITE_API_URL || '';
 
 const HEADER_OFFSET = 80;
 
@@ -20,35 +17,15 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] } }
 };
 
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.9 },
-  visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: 'backOut' } }
-};
-
 const staggerContainer = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
 };
 
-const FloatingOrb = ({ delay = 0, size = 400, color = 'cyan', position = {} }) => (
-  <motion.div
-    style={{ position: 'absolute', width: size, height: size, borderRadius: '50%', filter: 'blur(100px)', ...position }}
-    animate={{ y: [0, -30, 0], x: [0, 20, 0] }}
-    transition={{ duration: 8 + delay, repeat: Infinity, delay, ease: 'easeInOut' }}
-    className={color === 'cyan' ? 'bg-[radial-gradient(circle,rgba(0,245,255,0.2)_0%,transparent_70%)]' : color === 'purple' ? 'bg-[radial-gradient(circle,rgba(124,58,237,0.2)_0%,transparent_70%)]' : ''}
-  />
-);
-
-const GridBackground = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none">
-    <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(0,245,255,0.3) 1px, transparent 1px), linear-gradient(90deg,rgba(0,245,255,0.3) 1px, transparent 1px)', backgroundSize: '50px 50px' }} />
-  </div>
-);
-
 const Section = ({ id, children, className = '' }) => (
   <motion.section
     id={id}
-    className={`py-24 px-6 md:px-12 max-w-7xl mx-auto ${className}`}
+    className={`section ${className}`}
     initial="hidden"
     whileInView="visible"
     viewport={{ once: true, margin: '-100px' }}
@@ -59,13 +36,13 @@ const Section = ({ id, children, className = '' }) => (
 );
 
 const SectionHeader = ({ label, title, desc }) => (
-  <motion.div className="text-center mb-16" variants={fadeInUp}>
-    <motion.span className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-accent font-mono mb-4" variants={fadeInUp}>
-      <motion.span animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: 'linear' }} className="inline-block">✦</motion.span>
+  <motion.div className="section-header" variants={fadeInUp}>
+    <motion.span className="section-label" variants={fadeInUp}>
+      <motion.span className="section-label-icon" animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}>✦</motion.span>
       {' '}{label}
     </motion.span>
-    <motion.h2 className="text-4xl md:text-5xl font-bold text-white mb-4" variants={fadeInUp}>{title}</motion.h2>
-    {desc && <motion.p className="text-text-secondary text-lg max-w-xl mx-auto" variants={fadeInUp}>{desc}</motion.p>}
+    <motion.h2 className="section-title" variants={fadeInUp}>{title}</motion.h2>
+    {desc && <motion.p className="section-desc" variants={fadeInUp}>{desc}</motion.p>}
   </motion.div>
 );
 
@@ -79,63 +56,44 @@ const Button = ({ children, href, primary = false, className = '', onClick }) =>
   };
 
   return (
-    <a href={href} onClick={handleClick} className={`
-      inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300
-      ${primary
-        ? 'bg-gradient-primary text-primary hover:shadow-glow transform hover:-translate-y-1'
-        : 'border border-accent text-accent hover:bg-accent/10 hover:shadow-glow'
-      } ${className}
-    `}>
+    <a href={href} onClick={handleClick} className={`btn ${primary ? 'btn-primary' : 'btn-secondary'} ${className}`}>
       {children}
     </a>
   );
 };
 
 const SkillCard = ({ icon, title, items, delay }) => (
-  <motion.div
-    className="bg-secondary/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6 hover:border-accent/30 transition-all duration-300 group relative overflow-hidden"
-    variants={fadeInUp}
-    custom={delay}
-  >
-    <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-    <div className="relative z-10">
-      <div className="flex items-center gap-3 mb-4">
-        <span className="text-2xl">{icon}</span>
-        <h3 className="text-xl font-semibold text-white">{title}</h3>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {items.map((item) => (
-          <motion.span
-            key={item}
-            className="px-3 py-1.5 bg-white/5 rounded-full text-sm text-text-secondary border border-white/5 hover:border-accent/50 hover:text-accent transition-all duration-200 cursor-default"
-            whileHover={{ scale: 1.05, y: -2 }}
-          >
-            {item}
-          </motion.span>
-        ))}
-      </div>
+  <motion.div className="skill-category" variants={fadeInUp} custom={delay}>
+    <div className="skill-header">
+      <span className="skill-icon">{icon}</span>
+      <h3 className="skill-title">{title}</h3>
+    </div>
+    <div className="skill-tags">
+      {items.map((item) => (
+        <motion.span key={item} className="skill-tag" whileHover={{ scale: 1.05, y: -3 }}>
+          {item}
+        </motion.span>
+      ))}
     </div>
   </motion.div>
 );
 
-const ProjectCard = ({ title, description, techStack, image, github }) => (
-  <motion.div
-    className="group relative bg-secondary/50 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden hover:border-accent/30 transition-all duration-300"
-    variants={fadeInUp}
-    whileHover={{ y: -8 }}
-  >
-    <div className="aspect-video bg-elevated relative overflow-hidden">
-      {image && <img src={image} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />}
-      <div className="absolute inset-0 bg-gradient-to-t from-secondary via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4 gap-3">
-        <a href={github} target="_blank" rel="noreferrer" className="px-4 py-2 bg-accent text-primary rounded-lg font-semibold text-sm hover:shadow-glow transition-shadow">View Code</a>
+const ProjectCard = ({ title, description, techStack, image, github, delay }) => (
+  <motion.div className="project-card" variants={fadeInUp} custom={delay} whileHover={{ y: -12 }}>
+    <div className="project-image">
+      {image && <img src={image} alt={title} loading="lazy" />}
+      <div className="project-overlay">
+        <div className="project-links">
+          <a href={github} target="_blank" rel="noreferrer" className="project-link-btn">View Code</a>
+        </div>
       </div>
     </div>
-    <div className="p-5">
-      <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-accent transition-colors">{title}</h3>
-      <p className="text-text-secondary text-sm mb-3">{description}</p>
-      <div className="flex flex-wrap gap-2">
+    <div className="project-info">
+      <h3 className="project-title">{title}</h3>
+      <p className="project-desc">{description}</p>
+      <div className="project-tech">
         {techStack?.map((tech) => (
-          <span key={tech} className="px-2 py-1 bg-purple/10 text-purple-soft rounded text-xs font-mono">{tech}</span>
+          <span key={tech} className="project-tech-tag">{tech}</span>
         ))}
       </div>
     </div>
@@ -143,38 +101,35 @@ const ProjectCard = ({ title, description, techStack, image, github }) => (
 );
 
 const FeaturedProject = ({ project }) => (
-  <motion.div
-    className="bg-secondary/50 backdrop-blur-xl border border-accent/20 rounded-2xl overflow-hidden"
-    variants={fadeInUp}
-  >
-    <div className="grid md:grid-cols-2 gap-0">
-      <div className="aspect-video md:aspect-auto bg-elevated relative overflow-hidden">
-        {project.image && <img src={project.image} alt={project.title} className="w-full h-full object-cover" />}
-        <div className="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/50 to-transparent" />
+  <motion.div className="featured-project" variants={fadeInUp}>
+    <div className="featured-grid">
+      <div className="featured-image">
+        {project.image && <img src={project.image} alt={project.title} />}
+        <div className="featured-image-overlay" />
       </div>
-      <div className="p-8 flex flex-col justify-center">
-        <span className="text-accent text-sm font-mono mb-2">Featured Project</span>
-        <h3 className="text-3xl font-bold text-white mb-4">{project.title}</h3>
-        <p className="text-text-secondary mb-6">{project.description}</p>
-        <div className="space-y-4 mb-6">
-          <div>
-            <h4 className="text-white font-semibold text-sm mb-1">Problem</h4>
-            <p className="text-text-secondary text-sm">{project.problem}</p>
+      <div className="featured-content">
+        <span className="featured-label">Featured Project</span>
+        <h3 className="featured-title">{project.title}</h3>
+        <p className="featured-desc">{project.description}</p>
+        <div className="featured-details">
+          <div className="featured-detail">
+            <h4 className="featured-detail-title">Problem</h4>
+            <p className="featured-detail-text">{project.problem}</p>
           </div>
-          <div>
-            <h4 className="text-white font-semibold text-sm mb-1">Solution</h4>
-            <p className="text-text-secondary text-sm">{project.solution}</p>
+          <div className="featured-detail">
+            <h4 className="featured-detail-title">Solution</h4>
+            <p className="featured-detail-text">{project.solution}</p>
           </div>
-          <div>
-            <h4 className="text-white font-semibold text-sm mb-1">Tech Stack</h4>
-            <div className="flex flex-wrap gap-2 mt-1">
+          <div className="featured-detail">
+            <h4 className="featured-detail-title">Tech Stack</h4>
+            <div className="featured-tech-stack">
               {project.techStack?.map((tech) => (
-                <span key={tech} className="px-2 py-1 bg-accent/10 text-accent rounded text-xs font-mono">{tech}</span>
+                <span key={tech} className="tech-badge">{tech}</span>
               ))}
             </div>
           </div>
         </div>
-        <div className="flex gap-3">
+        <div className="featured-buttons">
           <Button href={project.liveDemo} primary>Live Demo</Button>
           <Button href={project.github}>GitHub</Button>
         </div>
@@ -183,113 +138,63 @@ const FeaturedProject = ({ project }) => (
   </motion.div>
 );
 
-const TestimonialCard = ({ name, role, feedback, rating, avatar, delay }) => (
-  <motion.div
-    className="bg-secondary/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6 relative overflow-hidden group"
-    variants={fadeInUp}
-    custom={delay}
-  >
-    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-accent/10 to-purple/10 rounded-bl-full" />
-    <div className="relative z-10">
-      <div className="flex items-center gap-4 mb-4">
-        <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center text-primary font-bold text-lg">
-          {name.charAt(0)}
-        </div>
-        <div>
-          <h4 className="text-white font-semibold">{name}</h4>
-          <p className="text-text-secondary text-sm">{role}</p>
-        </div>
+const TestimonialCard = ({ name, role, feedback, rating, delay }) => (
+  <motion.div className="testimonial-card" variants={fadeInUp} custom={delay} whileHover={{ y: -8 }}>
+    <div className="testimonial-header">
+      <div className="testimonial-avatar">{name.charAt(0)}</div>
+      <div className="testimonial-meta">
+        <h4>{name}</h4>
+        <span>{role}</span>
       </div>
-      <div className="flex gap-0.5 mb-3">
-        {[...Array(5)].map((_, i) => (
-          <motion.span
-            key={i}
-            className="text-highlight text-lg"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: delay + i * 0.1 }}
-          >
-            ★
-          </motion.span>
-        ))}
-      </div>
-      <p className="text-text-secondary text-sm leading-relaxed">"{feedback}"</p>
     </div>
+    <div className="testimonial-stars">
+      {[...Array(5)].map((_, i) => (
+        <span key={i} className="testimonial-star">★</span>
+      ))}
+    </div>
+    <p className="testimonial-text">"{feedback}"</p>
   </motion.div>
 );
 
-const Terminal = ({ terminal }) => {
-  const [lines, setLines] = useState([]);
-  const [currentLine, setCurrentLine] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      if (currentLine < 3) {
-        setLines(prev => [...prev, currentLine]);
-        setCurrentLine(prev => prev + 1);
-      }
-    }, 800);
-    return () => clearInterval(timer);
-  }, [currentLine]);
-
-  return (
-    <motion.div
-      className="bg-secondary/80 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden font-mono"
-      variants={fadeInUp}
-    >
-      <div className="flex items-center gap-2 px-4 py-2 bg-white/5 border-b border-white/10">
-        <div className="w-3 h-3 rounded-full bg-red-500" />
-        <div className="w-3 h-3 rounded-full bg-yellow-500" />
-        <div className="w-3 h-3 rounded-full bg-green-500" />
-        <span className="ml-4 text-text-secondary text-sm">{terminal.user}@{terminal.hostname}</span>
+const Terminal = ({ terminal }) => (
+  <motion.div className="terminal" variants={fadeInUp}>
+    <div className="terminal-header">
+      <div className="terminal-btn terminal-btn-red" />
+      <div className="terminal-btn terminal-btn-yellow" />
+      <div className="terminal-btn terminal-btn-green" />
+      <span className="terminal-title">{terminal.user}@{terminal.hostname}</span>
+    </div>
+    <div className="terminal-body">
+      <div className="terminal-line">
+        <span className="terminal-prompt">$ </span><span className="terminal-command">whoami</span>
+        <div className="terminal-output">{terminal.whoami}</div>
       </div>
-      <div className="p-4 text-sm">
-        {lines.includes(0) && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-accent mb-2">
-            $ whoami
-            <span className="text-white ml-2">{terminal.whoami}</span>
-          </motion.div>
-        )}
-        {lines.includes(1) && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-accent mb-2">
-            $ cat stack.txt
-            <div className="ml-4 mt-1">
-              {terminal.stack.map((cat) => (
-                <div key={cat.category} className="text-text-secondary mb-1">
-                  <span className="text-purple">{cat.category}:</span> [{cat.items.join(', ')}]
-                </div>
-              ))}
+      <div className="terminal-line">
+        <span className="terminal-prompt">$ </span><span className="terminal-command">cat stack.txt</span>
+        <div className="terminal-output">
+          {terminal.stack.map((cat) => (
+            <div key={cat.category} className="terminal-output-item">
+              <span className="terminal-category">{cat.category}:</span> [{cat.items.join(', ')}]
             </div>
-          </motion.div>
-        )}
-        {lines.includes(2) && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-accent">
-            $ echo "Ready to build 🚀"
-            <span className="text-highlight ml-2">"Ready to build 🚀"</span>
-          </motion.div>
-        )}
-        <motion.div
-          className="text-accent mt-2"
-          animate={{ opacity: [1, 1, 0] }}
-          transition={{ duration: 0.5, repeat: Infinity }}
-        >
-          $ <span className="animate-pulse">▋</span>
-        </motion.div>
+          ))}
+        </div>
       </div>
-    </motion.div>
-  );
-};
+      <div className="terminal-line">
+        <span className="terminal-prompt">$ </span><span className="terminal-command">echo "Ready to build 🚀"</span>
+        <div className="terminal-output"><span style={{ color: '#00FF9C' }}>"Ready to build 🚀"</span></div>
+      </div>
+      <div className="terminal-line">
+        <span className="terminal-prompt">$ </span><span className="terminal-cursor" />
+      </div>
+    </div>
+  </motion.div>
+);
 
 const ScrollProgress = () => {
   const { scrollYProgress } = useScroll();
   const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
-  return (
-    <motion.div
-      className="fixed top-0 left-0 right-0 h-0.5 bg-gradient-primary z-50 origin-left"
-      style={{ scaleX }}
-    />
-  );
+  return <motion.div className="scroll-progress" style={{ scaleX }} />;
 };
 
 const BackToTop = () => {
@@ -310,7 +215,7 @@ const BackToTop = () => {
           animate={{ scale: 1 }}
           exit={{ scale: 0 }}
           whileHover={{ scale: 1.1 }}
-          className="fixed bottom-8 right-8 w-12 h-12 rounded-xl bg-gradient-primary text-primary flex items-center justify-center shadow-glow z-40"
+          className="back-to-top"
         >
           ↑
         </motion.button>
@@ -323,37 +228,25 @@ const MobileMenu = ({ isOpen, onClose, navItems, navIds, activeSection }) => (
   <AnimatePresence>
     {isOpen && (
       <>
-        <motion.div
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-        />
-        <motion.nav
-          className="fixed top-0 right-0 bottom-0 w-72 max-w-[80vw] bg-secondary z-50 p-6 flex flex-col border-l border-white/10"
-          initial={{ x: '100%' }}
-          animate={{ x: 0 }}
-          exit={{ x: '100%' }}
-          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        >
-          <div className="flex justify-between items-center mb-8 pb-4 border-b border-white/10">
-            <span className="bg-gradient-primary bg-clip-text text-transparent font-bold text-xl">Menu</span>
-            <button onClick={onClose} className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-colors">✕</button>
+        <motion.div className="mobile-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
+        <motion.nav className="mobile-menu" initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 200 }}>
+          <div className="mobile-menu-header">
+            <span className="brand-text">Menu</span>
+            <button className="close-btn" onClick={onClose}>✕</button>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="mobile-nav-links">
             {navItems.map((item, i) => (
               <motion.a
                 key={item}
                 href={`#${navIds[i]}`}
-                className={`flex justify-between items-center px-4 py-3 rounded-xl transition-colors ${activeSection === navIds[i] ? 'bg-accent/10 text-accent border-l-2 border-accent' : 'text-text-secondary hover:bg-white/5 hover:text-white'}`}
+                className={activeSection === navIds[i] ? 'active' : ''}
                 onClick={(e) => { e.preventDefault(); scrollToSection(navIds[i]); onClose(); }}
                 initial={{ x: 20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: i * 0.05 }}
               >
                 {item}
-                <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                <span className="nav-arrow">→</span>
               </motion.a>
             ))}
           </div>
@@ -364,29 +257,12 @@ const MobileMenu = ({ isOpen, onClose, navItems, navIds, activeSection }) => (
 );
 
 export default function App() {
-  const [portfolio, setPortfolio] = useState(mockPortfolio);
-  const [status, setStatus] = useState('idle');
   const [activeSection, setActiveSection] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const heroRef = useRef(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setStatus('loading');
-        const { data } = await axios.get(`${API_BASE}/api/portfolio`);
-        setPortfolio(data);
-        setStatus('ready');
-      } catch {
-        setStatus('offline');
-      }
-    };
-    fetchData();
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['home', 'about', 'skills', 'featured', 'projects', 'testimonials', 'contact'];
+      const sections = ['home', 'about', 'terminal', 'skills', 'featured', 'projects', 'testimonials', 'contact'];
       for (const section of sections) {
         const el = document.getElementById(section);
         if (el) {
@@ -402,34 +278,28 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const { hero, summary, skills, testimonials, featuredProject, projects, contact, terminal } = portfolio;
+  const { hero, summary, skills, testimonials, featuredProject, projects, contact, terminal } = mockPortfolio;
 
   const navItems = ['Home', 'About', 'Skills', 'Projects', 'Testimonials', 'Contact'];
-  const navIds = ['home', 'about', 'skills', 'featured', 'testimonials', 'contact'];
+  const navIds = ['home', 'about', 'terminal', 'skills', 'featured', 'testimonials', 'contact'];
 
   return (
-    <div className="min-h-screen bg-primary text-white overflow-x-hidden">
+    <div className="page">
       <ScrollProgress />
       <BackToTop />
 
-      {/* Navigation */}
-      <motion.nav
-        className="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-4 flex justify-between items-center backdrop-blur-xl bg-primary/80 border-b border-white/5"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <a href="#home" className="flex items-center gap-3 font-bold text-xl" onClick={(e) => { e.preventDefault(); scrollToSection('home'); }}>
-          <img src="/img/haridevx.png" alt="Logo" className="w-10 h-10 rounded-lg object-contain" />
-          <span className="bg-gradient-primary bg-clip-text text-transparent hidden sm:block">Mr. Hariharan</span>
+      <motion.nav className="nav" initial={{ y: -100 }} animate={{ y: 0 }} transition={{ duration: 0.6 }}>
+        <a href="#home" className="brand" onClick={(e) => { e.preventDefault(); scrollToSection('home'); }}>
+          <img src="/img/haridevx.png" alt="Logo" className="brand-logo" />
+          <span className="brand-text">Mr. Hariharan</span>
         </a>
 
-        <div className="hidden md:flex gap-2">
+        <div className="nav-links">
           {navItems.map((item) => (
             <a
               key={item}
               href={`#${navIds[navItems.indexOf(item)]}`}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeSection === navIds[navItems.indexOf(item)] ? 'text-accent' : 'text-text-secondary hover:text-white'}`}
+              className={activeSection === navIds[navItems.indexOf(item)] ? 'active' : ''}
               onClick={(e) => { e.preventDefault(); scrollToSection(navIds[navItems.indexOf(item)]); }}
             >
               {item}
@@ -437,165 +307,111 @@ export default function App() {
           ))}
         </div>
 
-        <button
-          className={`md:hidden w-10 h-10 flex flex-col justify-center items-center gap-1.5 ${mobileMenuOpen ? 'open' : ''}`}
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          <span className="w-6 h-0.5 bg-white transition-transform" />
-          <span className="w-6 h-0.5 bg-white transition-opacity" />
-          <span className="w-6 h-0.5 bg-white" />
+        <button className={`hamburger ${mobileMenuOpen ? 'open' : ''}`} onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <span /><span /><span />
         </button>
       </motion.nav>
 
-      <MobileMenu
-        isOpen={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
-        navItems={navItems}
-        navIds={navIds}
-        activeSection={activeSection}
-      />
+      <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} navItems={navItems} navIds={navIds} activeSection={activeSection} />
 
-      {/* Hero Section */}
-      <section id="home" ref={heroRef} className="relative min-h-screen flex items-center justify-center px-6 py-32 overflow-hidden">
-        <GridBackground />
-        <FloatingOrb delay={0} size={500} color="cyan" position={{ top: '10%', left: '10%' }} />
-        <FloatingOrb delay={2} size={400} color="purple" position={{ bottom: '20%', right: '15%' }} />
+      <section id="home" className="hero">
+        <div className="hero-bg" />
+        <div className="hero-overlay" />
+        <div className="hero-orb hero-orb-1" />
+        <div className="hero-orb hero-orb-2" />
 
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,245,255,0.05)_0%,transparent_70%)]" />
-
-        <motion.div className="relative z-10 text-center max-w-4xl mx-auto" variants={staggerContainer} initial="hidden" animate="visible">
-          <motion.div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full text-sm font-medium text-text-secondary mb-8" variants={scaleIn}>
-            <span className="w-2 h-2 rounded-full bg-highlight animate-pulse" />
+        <motion.div className="hero-content" variants={staggerContainer} initial="hidden" animate="visible">
+          <motion.div className="hero-badge" variants={fadeInUp}>
+            <span className="hero-badge-dot" />
             Available for Work
           </motion.div>
 
-          <motion.h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-6 leading-tight" variants={fadeInUp}>
-            <span className="bg-gradient-to-r from-white via-white to-white/60 bg-clip-text text-transparent">
-              {hero.heading}
-            </span>
+          <motion.h1 className="hero-title" variants={fadeInUp}>
+            <span className="hero-title-text">{hero.heading}</span>
           </motion.h1>
 
-          <motion.p className="text-xl md:text-2xl text-text-secondary mb-10 max-w-2xl mx-auto" variants={fadeInUp}>
+          <motion.p className="hero-subtitle" variants={fadeInUp}>
             {hero.subtext}
           </motion.p>
 
-          <motion.div className="flex gap-4 justify-center flex-wrap" variants={fadeInUp}>
-            <Button href="#projects" primary className="px-8 py-4 text-lg">
-              <span>🚀</span> View Projects
-            </Button>
-            <Button href={contact.github} className="px-8 py-4 text-lg">
-              <span>🖥️</span> GitHub
-            </Button>
+          <motion.div className="hero-cta" variants={fadeInUp}>
+            <Button href="#projects" primary><span className="btn-icon">🚀</span> View Projects</Button>
+            <Button href={contact.github}><span className="btn-icon">🖥️</span> GitHub</Button>
           </motion.div>
         </motion.div>
 
-        <motion.div
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-          onClick={() => scrollToSection('about')}
-        >
-          <div className="w-6 h-10 border-2 border-text-muted rounded-full flex justify-center pt-2">
-            <div className="w-1 h-2 bg-accent rounded-full animate-bounce" />
-          </div>
+        <motion.div className="scroll-indicator" animate={{ y: [0, 15, 0] }} transition={{ duration: 1.5, repeat: Infinity }} onClick={() => scrollToSection('about')}>
+          <div className="scroll-mouse" />
         </motion.div>
       </section>
 
-      {/* About Section */}
       <Section id="about">
-        <SectionHeader label="About" title="About Me" desc="Full-stack developer building fast, scalable web applications" />
-        <motion.div
-          className="bg-secondary/50 backdrop-blur-xl border border-white/5 rounded-2xl p-8 md:p-12 relative overflow-hidden"
-          variants={fadeInUp}
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-purple/5 opacity-50" />
-          <div className="relative z-10">
-            <p className="text-lg md:text-xl text-text-secondary leading-relaxed max-w-3xl mx-auto text-center">
-              {summary}
-            </p>
-          </div>
+        <SectionHeader label="About" title="About Me" desc="Frontend developer building modern web applications" />
+        <motion.div className="about-card" variants={fadeInUp}>
+          <p className="about-text">{summary}</p>
         </motion.div>
       </Section>
 
-      {/* Terminal Section */}
-      <Section id="terminal" className="py-16">
-        <div className="max-w-3xl mx-auto">
-          <Terminal terminal={terminal} />
-        </div>
+      <Section id="terminal">
+        <Terminal terminal={terminal} />
       </Section>
 
-      {/* Skills Section */}
       <Section id="skills">
         <SectionHeader label="Expertise" title="Skills & Technologies" desc="Tools and technologies I work with" />
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="skills-grid">
           <SkillCard icon="🎨" title="Frontend" items={skills.frontend} delay={0} />
-          <SkillCard icon="⚙️" title="Backend" items={skills.backend} delay={1} />
+          <SkillCard icon="🗄️" title="Database" items={skills.backend} delay={1} />
           <SkillCard icon="🔧" title="Tools" items={skills.tools} delay={2} />
         </div>
       </Section>
 
-      {/* Featured Project Section */}
       <Section id="featured">
         <SectionHeader label="Highlight" title="Featured Project" desc="A showcase of my best work" />
         <FeaturedProject project={featuredProject} />
       </Section>
 
-      {/* Projects Grid */}
-      <Section id="projects" className="pb-32">
+      <Section id="projects">
         <SectionHeader label="Work" title="Projects" desc="Things I've built and shipped" />
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="projects-grid">
           {projects.map((project, i) => (
             <ProjectCard key={project.title} {...project} delay={i} />
           ))}
         </div>
       </Section>
 
-      {/* Testimonials Section */}
       <Section id="testimonials">
         <SectionHeader label="Reviews" title="Testimonials" desc="What people say about my work" />
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="testimonials-grid">
           {testimonials.map((testimonial, i) => (
             <TestimonialCard key={testimonial.name} {...testimonial} delay={i * 0.2} />
           ))}
         </div>
       </Section>
 
-      {/* Contact Section */}
       <Section id="contact">
         <SectionHeader label="Connect" title="Let's Work Together" desc="Feel free to reach out" />
-        <motion.div className="text-center" variants={staggerContainer}>
-          <motion.p className="text-2xl md:text-3xl font-bold text-white mb-4" variants={fadeInUp}>
-            Let's build something great
-          </motion.p>
-          <motion.p className="text-text-secondary mb-8 max-w-xl mx-auto" variants={fadeInUp}>
+        <motion.div className="contact-section" variants={staggerContainer}>
+          <motion.h2 className="contact-title" variants={fadeInUp}>Let's build something great</motion.h2>
+          <motion.p className="contact-subtitle" variants={fadeInUp}>
             I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
           </motion.p>
-          <motion.div className="flex gap-4 justify-center flex-wrap" variants={fadeInUp}>
-            <Button href={`mailto:${contact.email}`} primary className="px-8 py-4 text-lg">
-              <span>✉️</span> Email Me
-            </Button>
-            <Button href={contact.github} className="px-8 py-4 text-lg">
-              <span>🖥️</span> GitHub
-            </Button>
-            <Button href={contact.linkedin} className="px-8 py-4 text-lg">
-              <span>💼</span> LinkedIn
-            </Button>
+          <motion.div className="contact-buttons" variants={fadeInUp}>
+            <Button href={`mailto:${contact.email}`} primary><span className="btn-icon">✉️</span> Email Me</Button>
+            <Button href={contact.github}><span className="btn-icon">🖥️</span> GitHub</Button>
+            <Button href={contact.linkedin}><span className="btn-icon">💼</span> LinkedIn</Button>
           </motion.div>
         </motion.div>
       </Section>
 
-      {/* Footer */}
-      <footer className="py-12 px-6 border-t border-white/5 bg-secondary/30">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="flex justify-center gap-4 mb-6">
-            <a href={contact.github} className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center text-text-secondary hover:bg-accent/20 hover:text-accent transition-colors">🖥️</a>
-            <a href={contact.linkedin} className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center text-text-secondary hover:bg-accent/20 hover:text-accent transition-colors">💼</a>
-            <a href={contact.email} className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center text-text-secondary hover:bg-accent/20 hover:text-accent transition-colors">✉️</a>
-          </div>
-          <p className="text-text-secondary text-sm">
-            Designed & Built by <span className="text-accent">Mr. Hariharan</span> · {new Date().getFullYear()}
-          </p>
+      <footer className="footer">
+        <div className="footer-socials">
+          <a href={contact.github} className="footer-social">🖥️</a>
+          <a href={contact.linkedin} className="footer-social">💼</a>
+          <a href={contact.email} className="footer-social">✉️</a>
         </div>
+        <p className="footer-text">
+          Designed & Built by <a href={contact.github}>Mr. Hariharan</a> · {new Date().getFullYear()}
+        </p>
       </footer>
     </div>
   );

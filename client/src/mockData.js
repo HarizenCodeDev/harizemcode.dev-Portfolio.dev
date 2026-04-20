@@ -3,8 +3,8 @@ export const mockPortfolio = {
     bannerImage: '/img/1BMW.jpg',
     tagline: 'Electronics and Communication Engineering',
     lines: ['Learn from Yesterday,', 'Live for Today, and', 'Hop for Tomorrow'],
-    heading: 'I BUILD FAST, SCALABLE WEB APPS',
-    subtext: 'Full-stack development with a focus on performance and user experience.',
+    heading: 'I BUILD MODERN WEB APPLICATIONS',
+    subtext: 'Frontend developer specializing in React, HTML, CSS, and JavaScript.',
   },
   testimonials: [
     {
@@ -33,14 +33,14 @@ export const mockPortfolio = {
     title: 'E-Commerce Platform',
     description: 'A real-time e-commerce platform with inventory management, payment processing, and analytics dashboard.',
     problem: 'Slow, outdated website with poor mobile experience and no real-time inventory tracking.',
-    solution: 'Built a modern React-based frontend with Node.js backend, integrated Stripe payments, and real-time WebSocket updates.',
-    techStack: ['React', 'Node.js', 'MongoDB', 'Stripe', 'WebSocket'],
+    solution: 'Built a modern React-based frontend with SQL database integration, user authentication, and shopping cart functionality.',
+    techStack: ['React', 'HTML', 'CSS', 'JavaScript', 'SQL'],
     image: '/img/projects/ecommerce.png',
     liveDemo: 'https://example.com',
     github: 'https://github.com',
   },
   summary:
-    'Passionate full-stack developer focused on building fast, scalable web applications. I turn complex problems into elegant solutions with clean code and modern tech.',
+    'Passionate frontend developer focused on building fast, responsive web applications. I turn complex problems into elegant solutions with clean code using React, HTML, CSS, and JavaScript.',
   education: [
     {
       degree: 'B.E / Electronics and Communication Engineering',
@@ -62,9 +62,9 @@ export const mockPortfolio = {
     },
   ],
   skills: {
-    frontend: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Figma'],
-    backend: ['Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'REST APIs'],
-    tools: ['Git', 'GitHub', 'VS Code', 'Docker', 'AWS'],
+    frontend: ['HTML', 'CSS', 'JavaScript', 'React', 'Tailwind CSS'],
+    backend: ['SQL', 'Database Design', 'REST APIs'],
+    tools: ['Git', 'GitHub', 'VS Code', 'Figma'],
   },
   skillLogos: [
     '/img/logo/html.png',
@@ -131,11 +131,11 @@ export const mockPortfolio = {
   terminal: {
     user: 'hariharan',
     hostname: 'dev-portfolio',
-    whoami: 'Full-stack Developer | React | Node.js | IoT Enthusiast',
+    whoami: 'Frontend Developer | React | SQL',
     stack: [
-      { category: 'Frontend', items: ['React', 'Next.js', 'TypeScript', 'Tailwind'] },
-      { category: 'Backend', items: ['Node.js', 'Express', 'MongoDB'] },
-      { category: 'Tools', items: ['Git', 'Docker', 'AWS'] },
+      { category: 'Frontend', items: ['HTML', 'CSS', 'JavaScript', 'React'] },
+      { category: 'Database', items: ['SQL', 'MySQL'] },
+      { category: 'Tools', items: ['Git', 'VS Code', 'Figma'] },
     ],
   },
 };
