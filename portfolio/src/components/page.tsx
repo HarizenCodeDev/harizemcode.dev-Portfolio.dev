@@ -83,11 +83,11 @@ function Terminal({ terminal }: { terminal: typeof portfolioData.terminal }) {
         )}
         {lines.includes('focus') && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="terminal-line">
-            <span className="terminal-prompt">$ </span>echo "$FOCUS"<br />
+            <span className="terminal-prompt">$ </span>echo &quot;$FOCUS&quot;<br />
             <span className="terminal-output" style={{ color: 'var(--highlight)' }}>{terminal.focus}</span>
           </motion.div>
         )}
-        <motion.span className="terminal-prompt">$ </motion.span>
+        <motion.span className="terminal-prompt">$</motion.span>
         <span className="terminal-cursor" />
       </div>
     </motion.div>
@@ -112,14 +112,17 @@ function SkillCard({ icon, title, items, delay }: { icon: string; title: string;
   );
 }
 
-function ProjectCard({ title, description, techStack, github, delay }: { title: string; description: string; techStack: string[]; github: string; delay: number }) {
+function ProjectCard({ title, description, techStack, github, liveDemo, delay }: { title: string; description: string; techStack: string[]; github: string; liveDemo?: string; delay: number }) {
   return (
     <motion.div className="project-card" variants={fadeInUp} custom={delay} whileHover={{ y: -8 }}>
       <div className="project-image">
-        <div className="project-image-placeholder">💻</div>
+        <div className="project-image-placeholder">⚡</div>
         <div className="project-overlay">
           <div className="project-links">
-            <a href={github} target="_blank" rel="noreferrer" className="project-link-btn">View Code</a>
+            {liveDemo && liveDemo !== '#' && (
+              <a href={liveDemo} target="_blank" rel="noreferrer" className="project-link-btn project-link-btn-primary">Live Demo</a>
+            )}
+            <a href={github} target="_blank" rel="noreferrer" className="project-link-btn">GitHub</a>
           </div>
         </div>
       </div>
@@ -176,7 +179,7 @@ function FeaturedProject({ project }: { project: typeof portfolioData.featuredPr
   );
 }
 
-function TestimonialCard({ name, role, feedback, rating, delay }: { name: string; role: string; feedback: string; rating: number; delay: number }) {
+function TestimonialCard({ name, role, feedback, delay }: { name: string; role: string; feedback: string; delay: number }) {
   return (
     <motion.div className="testimonial-card" variants={fadeInUp} custom={delay}>
       <div className="testimonial-corner" />
@@ -192,17 +195,18 @@ function TestimonialCard({ name, role, feedback, rating, delay }: { name: string
           <span key={i} className="testimonial-star">★</span>
         ))}
       </div>
-      <p className="testimonial-text">"{feedback}"</p>
+      <p className="testimonial-text">“{feedback}”</p>
     </motion.div>
   );
 }
 
-function StatCard({ icon, value, label }: { icon: string; value: string | number; label: string }) {
+function StatCard({ icon, value, label, badge }: { icon: string; value: string | number; label: string; badge?: string }) {
   return (
     <motion.div className="stat-card" variants={scaleIn}>
       <div className="stat-icon">{icon}</div>
       <div className="stat-value">{value}</div>
       <div className="stat-label">{label}</div>
+      {badge && <div className="stat-badge">{badge}</div>}
     </motion.div>
   );
 }
@@ -271,6 +275,7 @@ export default function Portfolio() {
       <section id="home" className="hero">
         <div className="hero-glow-1" />
         <div className="hero-glow-2" />
+        <div className="hero-glow-3" />
         
         <motion.div className="hero-content" variants={staggerContainer} initial="hidden" animate="visible">
           <motion.div className="hero-badge" variants={scaleIn}>
@@ -321,7 +326,7 @@ export default function Portfolio() {
         <SectionHeader label="Proof of Skill" title="Developer Stats" />
         <div className="grid-3">
           <StatCard icon="🚀" value={`${stats.projectsBuilt}+`} label="Projects Built" />
-          <StatCard icon="⚛️" value={`${stats.technologiesUsed}+`} label="Technologies" />
+          <StatCard icon="⚛️" value={`${stats.technologiesUsed}+`} label="Technologies" badge="⚡ Performance Focused" />
           <StatCard icon="💼" value={stats.yearsExperience} label="Years Experience" />
         </div>
       </Section>
@@ -343,8 +348,8 @@ export default function Portfolio() {
       <Section id="testimonials">
         <SectionHeader label="Reviews" title="Testimonials" desc="What people say about my work" />
         <div className="grid-3">
-          {testimonials.map((testimonial, i) => (
-            <TestimonialCard key={testimonial.name} {...testimonial} delay={i * 0.2} />
+          {testimonials.map((t, i) => (
+            <TestimonialCard key={t.name} name={t.name} role={t.role} feedback={t.feedback} delay={i * 0.2} />
           ))}
         </div>
       </Section>
@@ -352,9 +357,9 @@ export default function Portfolio() {
       <Section id="contact">
         <SectionHeader label="Connect" title="Let's Work Together" />
         <div className="contact-section">
-          <motion.h2 className="contact-title" variants={fadeInUp}>Let's build something great</motion.h2>
+          <motion.h2 className="contact-title" variants={fadeInUp}>Let&apos;s build something great</motion.h2>
           <motion.p className="contact-subtitle" variants={fadeInUp}>
-            I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
+            I&apos;m always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
           </motion.p>
           <motion.div className="flex-gap-4 flex-center" variants={fadeInUp}>
             <Button href={`mailto:${contact.email}`} primary><span className="btn-icon">✉️</span> Email Me</Button>

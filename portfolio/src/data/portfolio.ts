@@ -11,7 +11,7 @@ export const portfolioData = {
     focus: 'Performance, scalability, real-world apps',
   },
   summary:
-    'Passionate full-stack developer focused on building fast, scalable web applications. I turn complex problems into elegant solutions with clean code and modern tech.',
+    'Full-stack developer who builds performant, scalable web applications that solve real business problems. I specialize in clean architecture, optimized user experiences, and delivering production-ready solutions that scale. Currently focused on Next.js ecosystem and building tools that developers love.',
   skills: {
     frontend: ['React', 'Next.js', 'HTML', 'CSS', 'JavaScript', 'Tailwind'],
     backend: ['SQL', 'Node.js', 'REST APIs', 'Database Design'],
@@ -29,28 +29,32 @@ export const portfolioData = {
   },
   projects: [
     {
-      title: 'Personal Portfolio',
-      description: 'Responsive portfolio showcase built with modern web technologies.',
-      techStack: ['HTML', 'CSS', 'JavaScript'],
+      title: 'E-Commerce Platform',
+      description: 'Full-featured shopping platform with cart, checkout, and admin dashboard.',
+      techStack: ['React', 'Next.js', 'SQL'],
       github: 'https://github.com/HariDevex',
+      liveDemo: '#',
     },
     {
-      title: 'YouTube Clone',
-      description: 'Front-end design mirroring YouTube layout with responsive design.',
+      title: 'Task Management App',
+      description: 'Productivity tool with real-time collaboration features.',
+      techStack: ['React', 'Node.js'],
+      github: 'https://github.com/HariDevex',
+      liveDemo: '#',
+    },
+    {
+      title: 'Weather Dashboard',
+      description: 'Real-time weather tracking with forecasts and interactive maps.',
+      techStack: ['JavaScript', 'CSS'],
+      github: 'https://github.com/HariDevex',
+      liveDemo: '#',
+    },
+    {
+      title: 'Portfolio Design',
+      description: 'Responsive portfolio with modern UI/UX patterns.',
       techStack: ['HTML5', 'CSS3'],
       github: 'https://github.com/HariDevex',
-    },
-    {
-      title: 'FootStep Power Generator',
-      description: 'IoT model converting mechanical energy to electrical energy.',
-      techStack: ['Arduino', 'Piezoelectric'],
-      github: 'https://github.com/HariDevex',
-    },
-    {
-      title: 'Smart Vacuum Cleaner',
-      description: 'IoT vacuum with obstacle detection capabilities.',
-      techStack: ['Arduino', 'Sensors'],
-      github: 'https://github.com/HariDevex',
+      liveDemo: '#',
     },
   ],
   testimonials: [
